@@ -210,7 +210,7 @@
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
+{#                        console.log(textStatus, errorThrown);#}
                     }
                 });
             }
@@ -221,8 +221,6 @@
             var totalCurrencyRates = paginationData.totalCurrencyRates;
             var maxPages = paginationData.maxPages;
             var thisPage = paginationData.thisPage;
-            console.log(paginationData);
-
             var paginatorHtml = '<ul class="pagination">';
             if (maxPages > 1) {
 
@@ -250,23 +248,33 @@
             paginatorHtml += '</ul>';
             $('.js-pgn-holder').empty();
             $(paginatorHtml).appendTo($('.js-pgn-holder'));
+            $('.js-results-table').css('opacity', '1');
+
 
         }
 
 
         $(document).on('click', '.js-page', function () {
+            showLoading();
             var requestedPage = $(this).children(":first").attr('page');
-            console.log(requestedPage);
             $('#ajax-pagination').val(requestedPage);
             ajaxGetResults();
         });
 
         $(document).on('keyup', '.js-search-box', function () {
             clearTimeout(typingTimer);
+            showLoading();
             if ($(this).val) {
+                $('#ajax-pagination').val(1);
+
                 typingTimer = setTimeout(ajaxGetResults, doneTypingInterval);
             }
         });
+
+        function showLoading(){
+            $('.js-results-table').css('opacity', '0.3');
+            $('#js-results-table').css('opacity', '0.3');
+        }
 
 
     </script>
@@ -316,6 +324,9 @@
         }
         .js-sep-dots,.js-page{
             cursor: pointer;
+            transition: opacity .70s ease-in-out;
+            -moz-transition: opacity .70s ease-in-out;
+            -webkit-transition: opacity .70s ease-in-out;
         }
 
         .pgn-holder{
