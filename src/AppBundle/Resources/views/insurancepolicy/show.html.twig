@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>InsurancePolicy</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ insurancePolicy.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ insurancePolicy.title }}</td>
+            </tr>
+            <tr>
+                <th>User</th>
+                <td>{{ insurancePolicy.user }}</td>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <td>{{ insurancePolicy.price }}</td>
+            </tr>
+            <tr>
+                <th>Createdon</th>
+                <td>{{ insurancePolicy.createdOn }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('calculator_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('calculator_edit', { 'id': insurancePolicy.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

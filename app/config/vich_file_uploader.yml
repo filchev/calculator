@@ -1,0 +1,17 @@
+vich_uploader:
+    db_driver: orm 
+    
+    mappings:
+        car_documents_image:
+            namer:              vich_uploader.namer_uniqid
+            uri_prefix:         /calculator/web/images
+            upload_destination: %kernel.root_dir%/../web/images
+            
+        policy_image:
+            namer:              vich_uploader.namer_uniqid
+            uri_prefix:         /calculator/web/images
+            upload_destination: %kernel.root_dir%/../web/images
+            
+
+
+            

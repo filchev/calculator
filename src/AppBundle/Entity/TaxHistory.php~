@@ -1,0 +1,125 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * TaxHistory
+ *
+ * @ORM\Table(name="taxes_history")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TaxHistoryRepository")
+ */
+class TaxHistory
+{
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="Tax")
+     * @ORM\JoinColumn(name="tax_id", referencedColumnName="id")
+     */
+    protected $tax;
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="InsurancePolicy")
+     * @ORM\JoinColumn(name="policy_id", referencedColumnName="id")
+     */
+    protected $policy;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="amount", type="string", length=255)
+     */
+    protected $amount;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set tax
+     *
+     * @param string $tax
+     * @return TaxHistory
+     */
+    public function setTax($tax)
+    {
+        $this->tax = $tax;
+
+        return $this;
+    }
+
+    /**
+     * Get tax
+     *
+     * @return string 
+     */
+    public function getTax()
+    {
+        return $this->tax;
+    }
+
+    /**
+     * Set policy
+     *
+     * @param string $policy
+     * @return TaxHistory
+     */
+    public function setPolicy($policy)
+    {
+        $this->policy = $policy;
+
+        return $this;
+    }
+
+    /**
+     * Get policy
+     *
+     * @return string 
+     */
+    public function getPolicy()
+    {
+        return $this->policy;
+    }
+
+    /**
+     * Set amount
+     *
+     * @param string $amount
+     * @return TaxHistory
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return string 
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+}

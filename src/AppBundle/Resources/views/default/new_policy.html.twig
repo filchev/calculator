@@ -1,0 +1,103 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% trans_default_domain "translations" %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <input type='hidden' id="selected-curreny" value="{{selectedCurrency}}">
+            <label>{{ 'app_new_policy.insurer'|trans }}  {{policyDetails.vendor.name}}</label>
+            {{ 'app_new_policy.details'|trans }}:
+            <label class="alert alert-danger">
+                {{ 'app_new_policy.base_price'|trans }}:
+                <spam class='js-price'> {{policyDetails.baseTax.amount}} </spam>
+            </label>
+            {{ 'app_new_policy.discounts'|trans }}:
+            {%for tax in policyDetails.taxes%}
+                <label class="{%if tax.direction == false%} alert alert-danger {%else%} alert alert-success {%endif%}">
+                    {{tax.tax.name}} : <spam class='js-price'>{{tax}}</spam>
+                </label>
+            {% endfor%}
+            <label class="alert alert-info">
+                 {{ 'app_new_policy.total_price'|trans }} : <spam class='js-price'>{{policyDetails.price}} </spam>
+            </label>
+            {#   {{ form_start(form) }}
+               {{ form_end(form) }}#}
+            {{ form(fileUploadForm) }}
+            <img id="driver-license-preview" src="#" style="display:none;"/>
+            <img id="car-docs-preview" src="#" style="display:none;"/>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        img{max-height: 120px}
+        label{width : 100%}
+        body { background: #F5F5F5; font: 18px/1.5 sans-serif; }
+        h1, h2 { line-height: 1.2; margin: 0 0 .5em; }
+        h1 { font-size: 36px; }
+        h2 { font-size: 21px; margin-bottom: 1em; }
+        p { margin: 0 0 1em 0; }
+        a { color: #0000F0; }
+        label{margin-right: 10px;}
+        a:hover { text-decoration: none; }
+        code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break-word; }
+        #wrapper { background: #FFF; margin: 1em auto; max-width: 800px; width: 95%; }
+        #container { padding: 2em; }
+        #welcome, #status { margin-bottom: 2em; }
+        #welcome h1 span { display: block; font-size: 75%; }
+        #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
+        #icon-book { display: none; }
+
+        @media (min-width: 768px) {
+            #wrapper { width: 80%; margin: 2em auto; }
+            #icon-book { display: inline-block; }
+            #status a, #next a { display: block; }
+
+            @-webkit-keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+            @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+            .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards;}
+        }
+
+    </style>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            function readURL(input, target) {
+
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#' + target).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $("#file_upload_imageFile").change(function () {
+                readURL(this, 'driver-license-preview');
+                $('#driver-license-preview').show();
+
+            });
+            $("#file_upload_carDocumentsImageFile").change(function () {
+                readURL(this, 'car-docs-preview');
+                $('#car-docs-preview').show();
+            });
+
+            $(".js-price").each(function () {
+                priceInBGN = parseFloat($(this).text());
+                currencyObject = $.parseJSON($('#selected-curreny').val())
+                convertedPrice = parseFloat(priceInBGN * currencyObject[Object.keys(currencyObject)[0]]).toFixed(2);
+                $(this).text(convertedPrice + ' ' + Object.keys(currencyObject)[0]);
+            });
+
+        });
+
+
+    </script>
+{% endblock %}
+

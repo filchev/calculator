@@ -1,0 +1,6 @@
+services:
+    app.calculator:
+        class: AppBundle\Utils\Calculator
+        arguments: [@form.factory, @request, @router]
+        public: true
+        scope: request

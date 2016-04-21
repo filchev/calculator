@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>PolicyHistory list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for policyHistory in policyHistories %}
+            <tr>
+                <td><a href="{{ path('policyhistory_show', { 'id': policyHistory.id }) }}">{{ policyHistory.id }}</a></td>
+                <td>{{ policyHistory.amount }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('policyhistory_show', { 'id': policyHistory.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('policyhistory_edit', { 'id': policyHistory.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('policyhistory_new') }}">Create a new entry</a>
+        </li>
+    </ul>
+{% endblock %}

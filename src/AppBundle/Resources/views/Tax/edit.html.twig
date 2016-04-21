@@ -1,0 +1,90 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class='tax-edit_form'>
+            {{ form_start(edit_form) }}
+{#            {{ form_row(edit_form.name) }}#}
+
+            <ul class="translations" data-prototype="{{form_widget(edit_form.translations.vars.prototype)|e }}">
+                {% for translation in edit_form.translations %}
+                    <li> {{ form_row(translation) }}</li>
+                    {% endfor %}
+
+            </ul>
+            {{ form_row(edit_form.valueFrom) }}
+            {{ form_row(edit_form.valueTo) }}
+            {{ form_row(edit_form.category) }}
+
+            {{ form_end(edit_form) }}
+        </div>
+
+        <ul>
+            <li>
+                <a href="{{ path('dashboard_taxes_index') }}">Back to the list</a>
+            </li>
+        </ul>
+    </div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    <script>
+
+
+        var $collectionHolder;
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add-translations-link">Add translation</a>');
+        var $newLinkLi = $('<li></li>').append($addTagLink);
+        jQuery(document).ready(function () {
+{#            autoComplate();#}
+            // Get the ul that holds the collection of tags
+            $collectionHolder = $('ul.translations');
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+            // count the current edit_form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+
+            $addTagLink.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+                // add a new tag edit_form (see next code block)
+                addTagForm($collectionHolder, $newLinkLi);
+            });
+        });
+        function addTagForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+            // get the new index
+            var index = $collectionHolder.data('index');
+            if (isNaN(index)) {
+                index = 0;
+            }
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+            // Display the edit_form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+            $newLinkLi.before($newFormLi);
+            addTagFormDeleteLink($newFormLi);
+        }
+
+        function addTagFormDeleteLink($tagFormLi) {
+            var $removeFormA = $('<a href="#">X</a>');
+            $tagFormLi.append($removeFormA);
+            $removeFormA.on('click', function (e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+                // remove the li for the tag edit_form
+                $tagFormLi.remove();
+            });
+        }
+
+
+    </script>
+{% endblock %}

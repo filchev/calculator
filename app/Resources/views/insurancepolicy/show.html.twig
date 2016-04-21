@@ -1,0 +1,59 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block body %}
+    <div class='container'>
+        <table class="container">
+            <tbody>
+                <tr>
+                    <th>Полица номер</th>
+                    <td>{{ insurancePolicy.id }}</td>
+                </tr>
+
+                <tr>
+                    <th>Създадена на</th>
+                    <td>{{ insurancePolicy.createdOn|date('Y-m-d H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Базова Цена</th>                    
+                    <td>{{ insurancePolicy.baseTax.amount}}</td>
+                </tr>
+                {% for tax in insurancePolicy.taxes %}
+                    <tr>
+
+                        <th>{{tax.tax.name}}</th>
+                        <td>{{tax.amount}}</td>
+                    </tr>
+                {%endfor%}
+                <tr>
+                    <th>Общо</th>
+                    <td>{{ insurancePolicy.price }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <ul>
+            <li>
+                <a href="{{ path('insurancepolicy_index') }}">Back to the list</a>
+            </li>
+
+        </ul>
+        {%for image in insurancePolicy.fileUploadImage%}
+            <img src="{{ vich_uploader_asset(image, 'imageFile') }}" />
+        {%endfor%}
+        {%for image in insurancePolicy.fileUploadImage%}
+            <img src="{{ vich_uploader_asset(image, 'carDocumentsImageFile') }}" />
+        {%endfor%}
+    </div>
+
+{% endblock %}
+
+
+{% block stylesheets %}
+    <style>
+        td,th{padding: 10px;}
+        th{width:185px }
+        img{
+            max-height: 200px
+        }
+    </style>
+{% endblock %}

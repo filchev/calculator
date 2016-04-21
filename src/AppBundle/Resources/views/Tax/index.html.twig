@@ -1,0 +1,45 @@
+{% extends 'AppBundle::base.html.twig' %}
+{% block body %}
+    <div class="container">
+
+        <h1>Tax list</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Valuefrom</th>
+                    <th>Valueto</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tax in taxes %}
+                    <tr>
+                        <td><a href="{{ path('dashboard_taxes_show', { 'id': tax.id }) }}">{{ tax.id }}</a></td>
+                        <td>{{ tax.name }}</td>
+                        <td>{{ tax.valueFrom }}</td>
+                        <td>{{ tax.valueTo }}</td>
+                        <td>
+                            <ul>
+                                <li>
+                                    <a href="{{ path('dashboard_taxes_show', { 'id': tax.id }) }}">show</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('dashboard_taxes_edit', { 'id': tax.id }) }}">edit</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <ul>
+            <li>
+                <a href="{{ path('dashboard_taxes_new') }}">Create a new entry</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

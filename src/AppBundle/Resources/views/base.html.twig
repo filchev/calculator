@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    {% block stylesheets %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+<body>
+    <div class="dropdown pull-right">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Langulages
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+
+            {% if app.request.get('_route_params') is empty%}
+                <ul class="lang-menu">
+                    <li><a href="{{ path(app.request.get('_route'))}}bg">Български</a></li>
+                    <li><a href="{{ path(app.request.get('_route'))}}en">English</a></li>
+                </ul>
+            {%else%}
+                <ul class="lang-menu">
+                    <li><a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': 'bg'})) }}">Български</a></li>
+                    <li><a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': 'en'})) }}">English</a></li>
+                </ul>
+            {%endif%}
+
+        </ul>
+    </div>
+
+{% block body %}{% endblock %}
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script>
+    (function ($) {
+        'use strict';
+        $.fn.autocompleter = function (options) {
+            var settings = {
+                url_list: '',
+                url_get: '',
+                min_length: 2,
+                on_select_callback: null
+            };
+            return this.each(function () {
+                if (options) {
+                    $.extend(settings, options);
+                }
+                var $this = $(this), $fakeInput = $this.clone();
+                $fakeInput.attr('id', 'fake_' + $fakeInput.attr('id'));
+                $fakeInput.attr('name', 'fake_' + $fakeInput.attr('name'));
+                $this.hide().after($fakeInput);
+                $fakeInput.autocomplete({
+                    source: settings.url_list,
+                    select: function (event, ui) {
+                        $this.val(ui.item.id);
+                        if (settings.on_select_callback) {
+                            settings.on_select_callback($this);
+                        }
+                    },
+                    minLength: settings.min_length
+                });
+                if ($this.val() !== '') {
+                    $.ajax({
+                        url: settings.url_get + $this.val(),
+                        success: function (name) {
+                            $fakeInput.val(name);
+                        }
+                    });
+                }
+            });
+        };
+    })(jQuery);
+</script>
+{% block javascripts %}{% endblock %}
+
+</body>
+</html>

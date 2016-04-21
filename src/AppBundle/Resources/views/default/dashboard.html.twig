@@ -1,0 +1,337 @@
+{% extends 'AppBundle::base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <div class='base-tax-form'>
+                <a href="#" class="add-tax-link">Add a Tax</a>
+
+                {{ form_start(baseTaxForm) }}
+
+                {{ form_row(baseTaxForm.amount) }}
+                <ul class="taxes"  data-prototype="{{ form_widget(baseTaxForm.baseTaxProperties.vars.prototype)|e }}">
+                    {% for tax in baseTaxForm.baseTaxProperties %}
+                        <li> {{ form_row(tax) }}</li>
+                        {% endfor %}
+
+                </ul>
+                {{ form_end(baseTaxForm) }}
+            </div>
+        </div>
+
+        {#   [{% for tax in results -%}
+           {{ {id: tax.id, label: tax.name, value: tax.valueFrom}|json_encode|raw }}
+           {%- if not loop.last %},{% endif -%}
+              {%- endfor %}] #}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .add-tax-link{position: absolute;right: 0;top: 0}
+        .base-tax-form{position: relative; max-width: 320px}
+        table,td,th{padding: 5px; border:1px solid #ccc; font-size: 12px;}
+        table * label{max-width: 400px}
+        th{max-width: 210px;text-align: left;}
+        label{width:100%;float: left;}
+        body { background: #F5F5F5; font: 18px/1.5 sans-serif; }
+        h1, h2 { line-height: 1.2; margin: 0 0 .5em; }
+        h1 { font-size: 36px; }
+        h2 { font-size: 21px; margin-bottom: 1em; }
+        p { margin: 0 0 1em 0; }
+        a { color: #0000F0; }
+        label{margin-right: 10px;}
+        a:hover { text-decoration: none; }
+        code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break-word; }
+        #wrapper { background: #FFF; margin: 1em auto; min-width: 800px; width: 95%; }
+        #container { padding: 2em; }
+        #welcome, #status { margin-bottom: 2em; }
+        #welcome h1 span { display: block; font-size: 75%; }
+        #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
+        #icon-book { display: none; }
+        ul{padding: 0;}
+        ul li{list-style: none} 
+        @media (min-width: 768px) {
+            #wrapper { width: 80%; margin: 2em auto; }
+            #icon-book { display: inline-block; }
+            #status a, #next a { display: block; }
+
+            @-webkit-keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+            @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+            .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards;}
+        }
+        .custom-combobox {
+            position: relative;
+            display: inline-block;
+        }
+        .custom-combobox-toggle {
+            position: absolute;
+            top: 0px;
+            bottom: 0;
+            margin-left: -1px;
+            padding: 0;
+            height: 40px;
+            width: 40px;
+            right: 0;
+            border-left: 1px solid #D3D3D3;
+            cursor:pointer;
+
+        }
+        .custom-combobox-toggle::before{
+            width: 10px;
+            position: absolute;
+            top: 15px;
+            left: 12px;
+            content: ' ';
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 10px solid #707070;
+            cursor:pointer;
+
+        } 
+        .custom-combobox-input {
+            margin: 0;
+            padding: 8px 13px;
+            padding-right: 47px;
+            font-size: 14px;
+            width: 320px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        (function ($) {
+            selectedCategories = [];
+            $.widget("custom.combobox", {
+                _create: function () {
+                    this.wrapper = $("<span>")
+                            .addClass("custom-combobox")
+                            .insertAfter(this.element);
+                    this.element.hide();
+                    this._createAutocomplete();
+                    this._createShowAllButton();
+                },
+                _createAutocomplete: function () {
+                    var selected = this.element.children(":selected"),
+                            value = selected.val() ? selected.text() : "";
+                    this.input = $("<input>")
+                            .appendTo(this.wrapper)
+                            .val(value)
+                            .attr("title", "")
+                            .addClass("custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left")
+                            .autocomplete({
+                                delay: 0,
+                                minLength: 0,
+                                source: $.proxy(this, "_source")
+                            })
+                            .tooltip({
+                                tooltipClass: "ui-state-highlight"
+                            });
+                    this._on(this.input, {
+                        autocompleteselect: function (event, ui) {
+
+
+                            ui.item.option.selected = true;
+                            $category = ui.item.option;
+                            var selectBoxId = $(this.element[0]).attr("id");
+                            var selectedCategory = $('select option:contains("' + $category.label + '")').attr('category');
+                            selectedCategories[selectBoxId] = selectedCategory;
+
+                            $('select').children("option").each(function () {
+                                $currentCategory = $(this).attr('category');
+                                if (!isNaN(parseInt($currentCategory))) {
+                                    if ($currentCategory == $('select option:contains("' + $category.label + '")').attr('category')) {
+
+                                        $(this).attr('disabled', true);
+                                    }
+                                }
+
+                            });
+                            this._trigger("select", event, {
+                                item: ui.item.option
+
+                            });
+                        },
+                        autocompletechange: "_removeIfInvalid"
+                    });
+                },
+                _createShowAllButton: function () {
+                    var input = this.input,
+                            wasOpen = false;
+                    $("<a>")
+                            .attr("tabIndex", -1)
+                            .attr("title", "Покажи всички")
+                            .tooltip()
+                            .appendTo(this.wrapper)
+                            .button({
+                                icons: {
+                                    primary: "ui-icon-triangle-1-s"
+                                },
+                                text: false
+                            })
+                            .removeClass("ui-corner-all")
+                            .addClass("custom-combobox-toggle ui-corner-right")
+                            .mousedown(function () {
+                                wasOpen = input.autocomplete("widget").is(":visible");
+                            })
+                            .click(function () {
+                                input.focus();
+                                // Close if already visible
+                                if (wasOpen) {
+                                    return;
+                                }
+
+                                // Pass empty string as value to search for, displaying all results
+                                input.autocomplete("search", "");
+                            });
+                },
+                _source: function (request, response) {
+                    var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                    response(this.element.children("option").map(function () {
+
+
+                        var text = $(this).text();
+                        if (this.value && (!request.term || matcher.test(text)))
+                            if ($(this).is(':disabled') === false) {
+                                return {
+                                    label: text,
+                                    value: text,
+                                    option: this
+                                };
+                            } else {
+                                var optionCategory = $(this).attr('category');
+                                var optionParentId = $(this).parent().attr('id');
+        {#                                console.log(selectedCategories);#}
+                                    for (var k in selectedCategories) {
+                                        if (typeof selectedCategories[k] !== 'function') {
+                                            if (k === optionParentId && optionCategory === selectedCategories[k]) {
+                                                return {
+                                                    label: text,
+                                                    value: text,
+                                                    option: this
+                                                };
+                                            }
+                                        }
+                                    }
+                                }
+
+                            ;
+                        })
+                                );
+                    },
+                    _removeIfInvalid: function (event, ui) {
+
+                        // Selected an item, nothing to do
+                        if (ui.item) {
+                            return;
+                        }
+
+                        // Search for a match (case-insensitive)
+                        var value = this.input.val(),
+                                valueLowerCase = value.toLowerCase(),
+                                valid = false;
+                        this.element.children("option").each(function () {
+                            if ($(this).text().toLowerCase() === valueLowerCase) {
+                                this.selected = valid = true;
+                                return false;
+                            }
+                        });
+                        // Found a match, nothing to do
+                        if (valid) {
+                            return;
+                        }
+
+                        // Remove invalid value
+                        this.input
+                                .val("")
+                                .attr("title", value + " didn't match any item")
+                                .tooltip("open");
+                        this.element.val("");
+                        this._delay(function () {
+                            this.input.tooltip("close").attr("title", "");
+                        }, 2500);
+                        this.input.autocomplete("instance").term = "";
+                    },
+                    _destroy: function () {
+                        this.wrapper.remove();
+                        this.element.show();
+                    }
+                });
+            })(jQuery);
+            function autoComplate() {
+                $(function () {
+                    $('[name^="base_tax[baseTaxProperties]"]').combobox();
+                    $("#toggle").click(function () {
+                        $("#combobox").toggle();
+                    });
+                });
+            }
+
+            var $collectionHolder;
+            // setup an "add a tag" link
+            var $addTagLink = $('<a href="#" class="add-tax-link">Add a Tax</a>');
+            var $newLinkLi = $('<li></li>').append($addTagLink);
+            jQuery(document).ready(function () {
+                autoComplate();
+                // Get the ul that holds the collection of tags
+                $collectionHolder = $('ul.taxes');
+                // add the "add a tag" anchor and li to the tags ul
+                $collectionHolder.append($newLinkLi);
+                // count the current form inputs we have (e.g. 2), use that as the new
+                // index when inserting a new item (e.g. 2)
+
+                $addTagLink.on('click', function (e) {
+                    // prevent the link from creating a "#" on the URL
+                    e.preventDefault();
+                    // add a new tag form (see next code block)
+                    addTagForm($collectionHolder, $newLinkLi);
+                    autoComplate();
+                });
+            });
+            function addTagForm($collectionHolder, $newLinkLi) {
+                // Get the data-prototype explained earlier
+                var prototype = $collectionHolder.data('prototype');
+                // get the new index
+                var index = $collectionHolder.data('index');
+                if (isNaN(index)) {
+                    index = parseInt($('select:last').attr('name').match(/\d+/)[0]) + 1;
+                }
+                // Replace '__name__' in the prototype's HTML to
+                // instead be a number based on how many items we have
+                var newForm = prototype.replace(/__name__/g, index);
+                // increase the index with one for the next item
+                $collectionHolder.data('index', index + 1);
+                // Display the form in the page in an li, before the "Add a tag" link li
+                var $newFormLi = $('<li></li>').append(newForm);
+                $newLinkLi.before($newFormLi);
+                addTagFormDeleteLink($newFormLi);
+                for (var k in selectedCategories) {
+                    if (typeof selectedCategories[k] !== 'function') {
+                        $('select option').each(function () {
+                            $currentCategory = $(this).attr('category');
+                            if (!isNaN(parseInt($currentCategory))) {
+                                if ($currentCategory === selectedCategories[k]) {
+                                    $(this).attr('disabled', true);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
+            function addTagFormDeleteLink($tagFormLi) {
+                var $removeFormA = $('<a href="#">X</a>');
+                $tagFormLi.append($removeFormA);
+                $removeFormA.on('click', function (e) {
+                    // prevent the link from creating a "#" on the URL
+                    e.preventDefault();
+                    // remove the li for the tag form
+                    $tagFormLi.remove();
+                });
+            }
+
+
+    </script>
+{% endblock %}

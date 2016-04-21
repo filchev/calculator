@@ -1,0 +1,63 @@
+app_index_default:
+    path:     /
+    defaults: { _controller: "AppBundle:Default:index" }
+    methods:  GET
+
+app_index:
+    path:     /{_locale}/
+    defaults: { _controller: "AppBundle:Default:index" }
+    methods:  GET
+    requirements:
+        _locale: en|bg  
+
+app_calculator:
+    resource: "@AppBundle/Resources/config/routing/insurancepolicy.yml"
+    prefix:   /{_locale}/calculator
+
+app_dashboard:
+    path:     /{_locale}/dashboard
+    defaults: { _controller: "AppBundle:Default:dashboard" }
+    methods:  [GET,POST]
+    
+app_new_policy:
+    path:     /{_locale}/new-policy
+    defaults: { _controller: "AppBundle:Default:newPolicy" }
+    methods:  [GET,POST]
+    
+app_tax_autocomplate:
+    path:    /{_locale}/dashboard/autocomplate 
+    defaults: { _controller: "AppBundle:Default:getTaxAutocomplate" }
+    methods:  GET
+    
+app_basetax:
+    resource: "@AppBundle/Resources/config/routing/basetax.yml"
+    prefix:   /{_locale}/basetax
+
+app_policyhistory:
+        resource: "@AppBundle/Resources/config/routing/policyhistory.yml"
+        prefix:   /{_locale}/policyhistory
+
+app_dashboard_taxes:
+        resource: "@AppBundle/Resources/config/routing/tax.yml"
+        prefix:   /dashboard/taxes
+        
+app_categories:
+        resource: "@AppBundle/Resources/config/routing/category.yml"
+        prefix:   /categories
+
+app_currency:
+    path:     /currency
+    defaults: { _controller: "AppBundle:Currency:getCurrency" }
+    methods:  [GET,POST]
+    
+app_currency_history:
+    path:     /currency/history/{page}
+    defaults: { _controller: AppBundle:Currency:currencyHistory, page:1 }
+    requirements:
+      page:  \d+
+    methods:  [GET,POST]
+    
+app_currency_history_ajax:
+    path:   /currency/history/ajax
+    defaults: { _controller: AppBundle:Currency:filterHistory, page:1 }
+    methods:  GET

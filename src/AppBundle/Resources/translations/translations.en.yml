@@ -1,0 +1,31 @@
+app_search_engine:
+    not_logged_in_msg: Please login to make an Order
+    order: Order
+    driver_age: Driver Age
+    viechle_purpose: Viechle Purpose
+    driver_age: Driver Age
+    engine_capacity: Engine Capacity
+    viechle_region: Viechle Registration Prefix
+    demage_insurance: Demage Insurance
+    wheel_direction: Wheel Direction
+    wheel_placeholder: Lefthand Direction
+    others: Others
+    search: Search
+app_common:
+    amount: Аmount
+    language: Language
+app_file_upload:
+    driver_license: Driver License Photo
+    car_documents: Car Documents Photo
+
+app_new_policy:
+    insurer: Insurer
+    details: Details
+    discounts: Discounts and increments
+    base_price: Base Price
+    total_price: Total
+
+
+
+
+                           

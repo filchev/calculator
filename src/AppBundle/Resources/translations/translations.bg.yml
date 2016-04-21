@@ -1,0 +1,30 @@
+app_search_engine:
+    not_logged_in_msg: Впишете се за да направите поръчка
+    order: Поръчай
+    driver_age: Възраст на водача
+    viechle_purpose: МПС се използва основно за
+    driver_age: Възраст на водача
+    engine_capacity: Кубатура на двигателя
+    viechle_region: Регистрация на МПС
+    demage_insurance: Каско
+    wheel_direction: Посока на волана
+    wheel_placeholder: Ляв Волан
+    others: Други
+    search: Търси
+app_file_upload:
+    driver_license: Снимка на шофьорска  книжка
+    car_documents: Снимка на талона на колата
+app_common:
+    language: Language
+    amount: Сума
+
+app_new_policy:
+    insurer: Застраховател
+    details: Детайли на полицата
+    discounts: Отстъпки и надбавки
+    base_price: Базова цена
+    total_price: Обща сума за плащане
+
+
+                           
+

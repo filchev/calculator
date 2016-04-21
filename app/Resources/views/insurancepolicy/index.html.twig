@@ -1,0 +1,52 @@
+{% extends 'AppBundle:base.html.twig' %}
+
+
+{% block body %}
+    <h1></h1>
+
+    <table class="container table-striped">
+        <thead>
+            <tr>
+                <th>Полица Номер</th>
+                <th>Закупена от:</th>
+                <th>Цена</th>
+                <th>Създадена на</th>
+                <th>Базова Цена</th>                    
+                <th>Други Такси</th>                    
+            </tr>
+        </thead>
+        <tbody>
+            {% for insurancePolicy in insurancePolicies %}
+                <tr>
+                    <td>
+                        <label> {{ insurancePolicy.id }}</label>
+                        <a href="{{ path('insurancepolicy_show', { 'id': insurancePolicy.id }) }}" class="btn btn-info">View</a>
+                    </td>
+                    <td>{{ insurancePolicy.user }}</td>
+                    <td>{{ insurancePolicy.price }}</td>
+                    <td>{{ insurancePolicy.createdOn|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ insurancePolicy.baseTax.amount}}</td>
+
+                    <td>
+                        <ul>
+                            {% for tax in insurancePolicy.taxes %}
+                                <li>{{tax.tax.name}} {{tax.amount}}</li>
+                                {%endfor%}
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block stylesheets %}
+
+    <style>
+        tbody,thead{background: #EAEAEA; border-radius: 6px; border: 1px solid #CDCDCD;}
+        table tr td,th{padding: 10px}
+        table tr td ul{list-style: none}
+        ul{padding: 0;}
+        label{padding: 5px}
+    </style>
+{% endblock %}
