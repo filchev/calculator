@@ -29,7 +29,7 @@ class CategoryController extends Controller
     //     ));
      }
 
-dasdasdaads
+//dasdasdaads
     /**
      * Creates a new Category entity.
      *
