@@ -18,16 +18,16 @@ class CategoryController extends Controller
      * Lists all Category entities.
      *
      */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
+    // public function indexAction()
+    // {
+    //     $em = $this->getDoctrine()->getManager();
 
-        $categories = $em->getRepository('AppBundle:Category')->findAll();
+    //     $categories = $em->getRepository('AppBundle:Category')->findAll();
 
-        return $this->render('category/index.html.twig', array(
-            'categories' => $categories,
-        ));
-    }
+    //     return $this->render('category/index.html.twig', array(
+    //         'categories' => $categories,
+    //     ));
+    // }
 
     /**
      * Creates a new Category entity.
