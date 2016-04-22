@@ -21,7 +21,7 @@ class CategoryController extends Controller
      public function indexAction()
      {
          $em = $this->getDoctrine()->getManager();
-//kak 6i stani tyi ve
+//kak 6i stani tyi ve az sym basi pi4a
     //     $categories = $em->getRepository('AppBundle:Category')->findAll();
 
     //     return $this->render('category/index.html.twig', array(
