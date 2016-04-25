@@ -27,8 +27,9 @@ class CategoryController extends Controller
              'categories' => $categories,
          ));
      }
+sad
+dasdasdaads
 
-//dasdasdaads
     /**
      * Creates a new Category entity.
      *
